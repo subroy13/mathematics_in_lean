@@ -10,6 +10,10 @@ variable (a b c d : ℝ)
 #check (min_le_right a b : min a b ≤ b)
 #check (le_min : c ≤ a → c ≤ b → c ≤ min a b)
 
+#check le_max_left
+#check le_max_right
+#check max_le
+
 example : min a b = min b a := by
   apply le_antisymm
   · show min a b ≤ min b a
@@ -39,13 +43,66 @@ example : min a b = min b a := by
     apply min_le_left
 
 example : max a b = max b a := by
-  sorry
+  have h : ∀ x y : ℝ, max x y ≤ max y x := by
+    intro x y
+    apply max_le
+    apply le_max_right
+    apply le_max_left
+  apply le_antisymm
+  apply h
+  apply h
+
 example : min (min a b) c = min a (min b c) := by
-  sorry
+  apply le_antisymm
+  {
+    apply le_min
+    {
+      apply le_trans
+      apply min_le_left
+      apply min_le_left
+    }
+    {
+      apply le_min
+      {
+        apply le_trans
+        apply min_le_left
+        apply min_le_right
+      }
+      {
+        apply le_trans
+        apply min_le_right
+        rfl
+      }
+    }
+  }
+  {
+    apply le_min
+    {
+      apply le_min
+      {
+        apply le_trans
+        apply min_le_left
+        rfl
+      }
+      {
+        apply le_trans
+        apply min_le_right
+        apply min_le_left
+      }
+    }
+    {
+      apply le_trans
+      apply min_le_right
+      apply min_le_right
+    }
+  }
+
 theorem aux : min a b + c ≤ min (a + c) (b + c) := by
   sorry
+
 example : min a b + c = min (a + c) (b + c) := by
   sorry
+
 #check (abs_add : ∀ a b : ℝ, |a + b| ≤ |a| + |b|)
 
 example : |a| - |b| ≤ |a - b| :=
@@ -80,5 +137,3 @@ variable (m n : ℕ)
 example : Nat.gcd m n = Nat.gcd n m := by
   sorry
 end
-
-

@@ -109,16 +109,20 @@ example (h₀ : d ≤ e) : c + exp (a + d) ≤ c + exp (a + e) := by
 example : (0 : ℝ) < 1 := by norm_num
 
 example (h : a ≤ b) : log (1 + exp a) ≤ log (1 + exp b) := by
-  have h₀ : 0 < 1 + exp a := by sorry
+  have h₀ : 0 < 1 + exp a := by linarith[exp_pos a]
   apply log_le_log h₀
-  sorry
+  apply add_le_add_left
+  apply exp_le_exp.mpr
+  exact h
 
 example : 0 ≤ a ^ 2 := by
   -- apply?
   exact sq_nonneg a
 
 example (h : a ≤ b) : c - exp b ≤ c - exp a := by
-  sorry
+  -- apply?
+  apply sub_le_sub_left
+  exact exp_le_exp.mpr h
 
 example : 2*a*b ≤ a^2 + b^2 := by
   have h : 0 ≤ a^2 - 2*a*b + b^2
@@ -139,6 +143,21 @@ example : 2*a*b ≤ a^2 + b^2 := by
   linarith
 
 example : |a*b| ≤ (a^2 + b^2)/2 := by
-  sorry
+  apply abs_le'.mpr
+  constructor
+  {
+    have h: 0 ≤ a^2 - 2*a*b + b^2
+    calc
+      a^2 - 2*a*b + b^2 = (a - b)^2 := by ring
+      _ ≥ 0 := by apply pow_two_nonneg
+    linarith
+  }
+  {
+    have h: 0 ≤ a^2 + 2*a*b + b^2
+    calc
+      a^2 + 2*a*b + b^2 = (a + b)^2 := by ring
+      _ ≥ 0 := by apply pow_two_nonneg
+    linarith
+  }
 
 #check abs_le'.mpr
