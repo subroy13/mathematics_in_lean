@@ -18,6 +18,10 @@ variable (h : a ≤ b) (h' : b ≤ c)
 
 end
 
+-- Apply technique takes existing hyp H -> goal G (in the theorem)
+-- And tries the current goal with G, if matches, it updates the current goal to H
+-- Basically, it is a reduction technique
+
 example (x y z : ℝ) (h₀ : x ≤ y) (h₁ : y ≤ z) : x ≤ z := by
   apply le_trans
   · apply h₀
@@ -44,7 +48,13 @@ example (x : ℝ) : x ≤ x :=
 
 -- Try this.
 example (h₀ : a ≤ b) (h₁ : b < c) (h₂ : c ≤ d) (h₃ : d < e) : a < e := by
-  sorry
+  apply lt_trans
+  {
+    apply lt_of_le_of_lt h₀ h₁
+  }
+  {
+    apply lt_of_le_of_lt h₂ h₃
+  }
 
 example (h₀ : a ≤ b) (h₁ : b < c) (h₂ : c ≤ d) (h₃ : d < e) : a < e := by
   linarith
@@ -86,7 +96,15 @@ example (h₀ : a ≤ b) (h₁ : c < d) : a + exp c + e < b + exp d + e := by
     apply exp_lt_exp.mpr h₁
   apply le_refl
 
-example (h₀ : d ≤ e) : c + exp (a + d) ≤ c + exp (a + e) := by sorry
+example (h₀ : d ≤ e) : c + exp (a + d) ≤ c + exp (a + e) := by
+  apply add_le_add
+  {
+    apply le_refl
+  }
+  {
+    rw[exp_le_exp]
+    apply add_le_add_left h₀
+  }
 
 example : (0 : ℝ) < 1 := by norm_num
 
@@ -124,4 +142,3 @@ example : |a*b| ≤ (a^2 + b^2)/2 := by
   sorry
 
 #check abs_le'.mpr
-
