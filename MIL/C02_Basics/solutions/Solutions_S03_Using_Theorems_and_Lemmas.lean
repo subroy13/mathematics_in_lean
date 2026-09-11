@@ -57,4 +57,3 @@ example : |a*b| ≤ (a^2 + b^2)/2 := by
     apply fact1
   rw [le_div_iff₀ h]
   apply fact2
-
